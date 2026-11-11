@@ -1,0 +1,18 @@
+services:
+  analizador:
+    build:
+      context: .
+      dockerfile: Dockerfile.analizador
+    image: analizador-fasta:v3
+    user: "1000:1000"
+    volumes:
+      - ./datos:/datos:ro,Z
+      - ./reportes:/salida:z
+    entrypoint: ["/bin/sh", "-c"]
+    command: ["python /app/analizador.py /datos/ejemplo.fasta > /salida/resumen-compose.txt"]
+  web:
+    image: nginx:stable
+    ports:
+      - "127.0.0.1:8084:80"
+    volumes:
+      - ./reportes:/usr/share/nginx/html:ro,z
